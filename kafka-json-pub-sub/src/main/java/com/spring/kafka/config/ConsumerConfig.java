@@ -15,8 +15,8 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import com.spring.kafka.model.Bank;
 
-@Configuration
-@EnableKafka
+//@Configuration
+//@EnableKafka
 public class ConsumerConfig {
 
 	@Value("${kafka.bootstrap.servers}")

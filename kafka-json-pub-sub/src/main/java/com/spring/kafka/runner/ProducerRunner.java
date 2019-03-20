@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import com.spring.kafka.model.Bank;
 import com.spring.kafka.service.ProducerService;
 
-@Component
+//@Component
 public class ProducerRunner implements CommandLineRunner{
 	private Logger logger;
 	private ProducerService producerService;

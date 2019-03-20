@@ -13,8 +13,6 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
-import com.spring.kafka.model.Bank;
-
 @Configuration
 public class ProducerConfig {
 	@Value("${kafka.bootstrap.servers}")
@@ -33,12 +31,12 @@ public class ProducerConfig {
 	}
 
 	@Bean
-	public ProducerFactory<String, Bank> producerFactory() {
+	public ProducerFactory<String, Object> producerFactory() {
 		return new DefaultKafkaProducerFactory<>(producerConfigs());
 	}
 
 	@Bean
-	public KafkaTemplate<String, Bank> kafkaTemplate() {
+	public KafkaTemplate<String, Object> kafkaTemplate() {
 		return new KafkaTemplate<>(producerFactory());
 	}
 }

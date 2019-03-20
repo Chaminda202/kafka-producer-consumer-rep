@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.spring.kafka.model.Bank;
 
-@Service
+//@Service
 public class ConsumerService {
 	private Logger logger;
 
