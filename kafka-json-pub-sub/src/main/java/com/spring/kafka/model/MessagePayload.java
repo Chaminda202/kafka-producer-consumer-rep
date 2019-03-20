@@ -1,6 +1,7 @@
 package com.spring.kafka.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.spring.kafka.util.JacksonUtil;
 
 public class MessagePayload {
 	@JsonProperty("description")
@@ -27,5 +28,10 @@ public class MessagePayload {
 	}
 	public void setIdentifier(int identifier) {
 		this.identifier = identifier;
+	}
+	
+	@Override
+	public String toString() {
+		return JacksonUtil.getToString(this);
 	}
 }

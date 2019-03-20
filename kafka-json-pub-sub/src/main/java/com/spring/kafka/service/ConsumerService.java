@@ -1,16 +1,19 @@
 package com.spring.kafka.service;
 
+import java.util.stream.StreamSupport;
+
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.common.header.Headers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.messaging.MessageHeaders;
-import org.springframework.messaging.handler.annotation.Headers;
+
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
-import com.spring.kafka.model.Bank;
+import com.spring.kafka.model.MessagePayload;
 
-//@Service
+@Service
 public class ConsumerService {
 	private Logger logger;
 
@@ -18,17 +21,26 @@ public class ConsumerService {
 		this.logger = LoggerFactory.getLogger(this.getClass());
 	}
 
-	/*@KafkaListener(topics = "${kafka.sample.topic}")
-	public void secondTopicListener(Bank payload) {
-		logger.info("received json payload = {}", JacksonUtil.getToString(payload));
-	}*/
+	@KafkaListener(topics = "${kafka.sample.topic}", groupId = "${spring.kafka.consumer.group.id}", clientIdPrefix = "json", containerFactory = "kafkaListenerContainerFactory")
+	public void listenAsObject(ConsumerRecord<String, MessagePayload> cr, @Payload MessagePayload payload) {
+		logger.info("Logger 1 [JSON] received key {}: Type [{}] | Payload: {} | Record: {}", cr.key(),
+				typeIdHeader(cr.headers()), payload, cr.toString());
+	}
 
-	@KafkaListener(topics = "${kafka.sample.topic}")
-	public void receive(@Payload Bank data, @Headers MessageHeaders headers) {
-		logger.info("received payload ='{}'", data);
+	@KafkaListener(topics = "${kafka.sample.topic}", groupId = "${spring.kafka.consumer.group.id}", clientIdPrefix = "string", containerFactory = "kafkaListenerStringContainerFactory")
+	public void listenasString(ConsumerRecord<String, String> cr, @Payload String payload) {
+		logger.info("Logger 2 [String] received key {}: Type [{}] | Payload: {} | Record: {}", cr.key(),
+				typeIdHeader(cr.headers()), payload, cr);
+	}
 
-		headers.keySet().forEach(key -> {
-			logger.info("{}: {}", key, headers.get(key));
-		});
+	@KafkaListener(topics = "${kafka.sample.topic}", groupId = "${spring.kafka.consumer.group.id}", clientIdPrefix = "bytearray", containerFactory = "kafkaListenerByteArrayContainerFactory")
+	public void listenAsByteArray(ConsumerRecord<String, byte[]> cr, @Payload byte[] payload) {
+		logger.info("Logger 3 [ByteArray] received key {}: Type [{}] | Payload: {} | Record: {}", cr.key(),
+				typeIdHeader(cr.headers()), payload, cr);
+	}
+
+	private String typeIdHeader(Headers headers) {
+		return StreamSupport.stream(headers.spliterator(), false).filter(header -> header.key().equals("__TypeId__"))
+				.findFirst().map(header -> new String(header.value())).orElse("N/A");
 	}
 }
