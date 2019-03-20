@@ -36,6 +36,7 @@ public class ConsumerConfig {
 				JsonDeserializer.class);
 		props.put(org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG, groupId);
 		props.put(org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetRest);
+		props.put(org.apache.kafka.clients.consumer.ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 8);
 		return props;
 	}
 
@@ -51,6 +52,8 @@ public class ConsumerConfig {
 	public ConcurrentKafkaListenerContainerFactory<String, Bank> kafkaListenerContainerFactory() {
 		ConcurrentKafkaListenerContainerFactory<String,  Bank> factory = new ConcurrentKafkaListenerContainerFactory<>();
 		factory.setConsumerFactory(consumerFactory());
+		//enables=d batch processing
+		factory.setBatchListener(true);
 		return factory;
 	}
 }
